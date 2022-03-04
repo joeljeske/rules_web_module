@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    // "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "es2015.iterable", "esnext"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "pretty": true,
+    "rootDir": "./",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2018",
+    "noFallthroughCasesInSwitch": true
+  }
+}

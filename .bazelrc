@@ -1,0 +1,68 @@
+build --disk_cache=~/.cache/bazel-disk-cache
+build --incompatible_remote_results_ignore_disk
+
+# Show the output files created by builds that requested more than one target.
+# This helps users locate the build outputs in more cases
+build --show_result=20
+
+# Turn on --incompatible_strict_action_env which was on by default
+# in Bazel 0.21.0 but turned off again in 0.22.0. Follow
+# https://github.com/bazelbuild/bazel/issues/7026 for more details.
+# This flag is needed to so that the bazel cache is not invalidated
+# when running bazel via `yarn bazel`.
+# See https://github.com/angular/angular/issues/27514.
+build --incompatible_strict_action_env
+
+# Enable platform specific configuration
+common --enable_platform_specific_config
+
+# Allow the Bazel server to check directory sources for changes
+# Avoids warning spam with rules_nodejs feature that models node_modules as directories
+# See https://github.com/bazelbuild/rules_nodejs/releases/tag/3.6.0
+startup --host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1
+
+# Use a filesystem watcher to see what files have changed
+build --watchfs
+fetch --watchfs
+query --watchfs
+
+###############################
+# Settings for running tests  #
+###############################
+
+# We want to be able to run `bazel test --test_timeout_filter=short` and have
+# a meaningful result: run the fast tests.
+# Encourage engineers to add size="small" to their tests that run under 1 minute.
+# Ideally that should be Bazel's default, but it's hard to change or intercept.
+test --test_verbose_timeout_warnings
+
+# Allow Bazel test to run on only 90% of the local system's cores
+build --local_test_jobs="HOST_CPUS*.9"
+
+# Specifies desired output mode for running tests.
+# Valid values are
+#   'summary' to output only test status summary
+#   'errors' to also print test logs for failed tests
+#   'all' to print logs for all tests
+#   'streamed' to output logs for all tests in real time
+#     (this will force tests to be executed locally one at a time regardless of --test_strategy value).
+build --test_output=errors
+# Specifies the desired format ot the test summary.
+# Valid values are
+#   'short' to print information only about tests executed
+#   'terse', to print information only about unsuccessful tests that were run
+#   'detailed' to print detailed information about failed test cases
+#   'none' to omit the summary
+build --test_summary=detailed
+
+###############################
+# Load any settings specific to the current user.
+# .bazelrc.user should appear in .gitignore so that settings are not shared with team members
+# This needs to be last statement in this
+# config, as the user configuration should be able to overwrite flags from this file.
+# See https://docs.bazel.build/versions/master/best-practices.html#bazelrc
+# (Note that we use .bazelrc.user so the file appears next to .bazelrc in directory listing,
+# rather than user.bazelrc as suggested in the Bazel docs)
+try-import %workspace%/.bazelrc.user
+
+# DO NOT ADD HERE; settings should be above the `try-import %workspace%/.bazelrc.user` line
