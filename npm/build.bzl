@@ -60,5 +60,9 @@ def npm_web_module(name, module_name, entry_point, deps = None, includes = None,
     web_module(
         name = name,
         assets = [target],
+        deps = deps,
+        # In the npm case, all our deps are bundled and
+        # considered our own target, not really a "dep" but our "src"
+        targets = deps,
         copy_manifest_file = target + "/importmap.json",
     )

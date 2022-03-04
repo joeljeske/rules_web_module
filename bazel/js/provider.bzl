@@ -7,3 +7,20 @@ RhWebModuleInfo = provider(
         "transitive_manifests": "inclusive transitive assets",
     },
 )
+
+def rh_web_module_info(manifest, assets, deps = []):
+    transitive_assets = []
+    transitive_manifests = []
+
+    for dep in deps:
+        if RhWebModuleInfo in dep:
+            web_module_info = dep[RhWebModuleInfo]
+            transitive_manifests.append(web_module_info.transitive_manifests)
+            transitive_assets.append(web_module_info.transitive_assets)
+
+    return RhWebModuleInfo(
+        manifest = manifest,
+        assets = assets,
+        transitive_manifests = depset([manifest], transitive = transitive_manifests),
+        transitive_assets = depset(assets, transitive = transitive_assets),
+    )

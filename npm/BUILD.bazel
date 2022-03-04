@@ -1,5 +1,7 @@
 load(":build.bzl", "npm_web_module")
 
+package(default_visibility = ["//visibility:public"])
+
 npm_web_module(
     # The bazel target that libs dep on
     name = "react",

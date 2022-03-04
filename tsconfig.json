@@ -3,6 +3,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
+    "esModuleInterop": true,
     // "isolatedModules": true,
     "jsx": "react-jsx",
     "lib": ["dom", "dom.iterable", "es2015.iterable", "esnext"],

@@ -1,4 +1,6 @@
-load(":provider.bzl", "RhWebModuleInfo")
+load(":provider.bzl", "rh_web_module_info")
+load("@build_bazel_rules_nodejs//:providers.bzl", "DeclarationInfo", "declaration_info")
+load("@rules_nodejs//nodejs:providers.bzl", "js_module_info")
 
 def _impl(ctx):
     manifest_file = None
@@ -19,23 +21,30 @@ def _impl(ctx):
     else:
         manifest_file = ctx.file.manifest
 
-    transitive_assets = []
-    transitive_manifests = []
-
-    for dep in ctx.attr.deps:
-        web_module_info = dep[RhWebModuleInfo]
-        transitive_manifests.append(web_module_info.transitive_manifests)
-        transitive_assets.append(web_module_info.transitive_assets)
+    # Build our own declaration info, to enable
+    # ts_library to verify checking against deps on transtives
+    self_declarations = [
+        t[DeclarationInfo].declarations
+        for t in ctx.attr.targets
+        if DeclarationInfo in t
+    ]
 
     return [
-        RhWebModuleInfo(
-            manifest = manifest_file,
+        js_module_info(
+            sources = depset(),
+            deps = ctx.attr.deps,
+        ),
+        declaration_info(
+            declarations = depset(transitive = self_declarations),
+            deps = ctx.attr.deps,
+        ),
+        rh_web_module_info(
             assets = ctx.files.assets,
-            transitive_manifests = depset([ctx.file.manifest], transitive = transitive_manifests),
-            transitive_assets = depset(ctx.files.assets, transitive = transitive_assets),
+            manifest = ctx.file.manifest,
+            deps = ctx.attr.deps,
         ),
         DefaultInfo(
-            files = depset([manifest_file]),
+            files = depset([manifest_file].extend(ctx.files.assets)),
         ),
     ]
 
@@ -53,9 +62,14 @@ web_module = rule(
             doc = "a list of assets referenced to via the manifest",
             allow_files = True,
         ),
+        # TODO: consolidate with deps. rollup_bundle loses our DeclarationInfo
+        "targets": attr.label_list(
+            doc = "The list of immediate deps, distinguished from transitive deps",
+            # providers = [RhWebModuleInfo],
+        ),
         "deps": attr.label_list(
             doc = "The list of deps that are used by this module",
-            providers = [RhWebModuleInfo],
+            # providers = [RhWebModuleInfo],
         ),
     },
 )

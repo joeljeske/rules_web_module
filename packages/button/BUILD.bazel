@@ -2,7 +2,10 @@ load("//bazel/js:index.bzl", "ts_library", "web_module")
 load("@npm//jest:index.bzl", "jest_test")
 load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
 
-_DEPS = []
+_DEPS = [
+    "//npm:react",
+    "@npm//tslib",
+]
 
 ts_library(
     name = "compile",
@@ -23,8 +26,11 @@ ts_library(
     tsconfig = "//:tsconfig.json",
     deps = [
         "compile",
+        "//npm:react",
+        "@npm//@testing-library/react",
         "@npm//@types/jest",
         "@npm//@types/node",
+        "@npm//tslib",
     ],
 )
 
@@ -43,6 +49,7 @@ jest_test(
     ],
     env = {
         "JEST_ROOT_DIR": package_name(),
+        "JEST_TEST_ENVIRONMENT": "jsdom",
     },
     link_workspace_root = True,
 )
