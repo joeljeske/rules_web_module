@@ -1,7 +1,44 @@
 load("//bazel/js:index.bzl", "ts_library")
+load("@npm//jest:index.bzl", "jest_test")
 
 ts_library(
     name = "compile",
-    srcs = ["index.ts"],
+    srcs = glob(
+        [
+            "*.ts",
+            "*.tsx",
+        ],
+        exclude = ["*.test.*"],
+    ),
     tsconfig = "//:tsconfig.json",
+)
+
+ts_library(
+    name = "test_compile",
+    srcs = glob(["*.test.*"]),
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "compile",
+        "@npm//@types/jest",
+        "@npm//@types/node",
+    ],
+)
+
+jest_test(
+    name = "test",
+    args = [
+        "--config $(execpath //:jest.config.js)",
+        "--no-cache",
+        "--no-watchman",
+        "--ci",
+        "--runInBand",
+    ],
+    data = [
+        ":test_compile",
+        "//:jest.config.js",
+    ],
+    env = {
+        "JEST_ROOT_DIR": package_name(),
+    },
+    link_workspace_root = True,
 )
