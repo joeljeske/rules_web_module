@@ -1,0 +1,29 @@
+diff --git a/node_modules/@bazel/rollup/rollup_bundle.bzl b/node_modules/@bazel/rollup/rollup_bundle.bzl
+index 9f52eff..4a5b22e 100755
+--- a/node_modules/@bazel/rollup/rollup_bundle.bzl
++++ b/node_modules/@bazel/rollup/rollup_bundle.bzl
+@@ -120,7 +120,6 @@ Otherwise, the outputs are assumed to be a single file.
+         executable = True,
+         cfg = "exec",
+         default = (
+-            
+             "//rollup/bin:rollup"
+         ),
+     ),
+@@ -163,6 +162,7 @@ When enabled, this rule invokes the "rollup_worker_bin"
+ worker aware binary rather than "rollup_bin".""",
+         default = False,
+     ),
++    "env": attr.string_dict(),
+ }
+ 
+ def _desugar_entry_point_names(name, entry_point, entry_points):
+@@ -341,7 +341,7 @@ def _rollup_bundle(ctx):
+         arguments = [args],
+         mnemonic = "Rollup",
+         execution_requirements = execution_requirements,
+-        env = {"COMPILATION_MODE": ctx.var["COMPILATION_MODE"]},
++        env = dict(COMPILATION_MODE = ctx.var["COMPILATION_MODE"], **ctx.attr.env),
+         link_workspace_root = ctx.attr.link_workspace_root,
+     )
+ 

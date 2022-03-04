@@ -1,5 +1,8 @@
-load("//bazel/js:index.bzl", "ts_library")
+load("//bazel/js:index.bzl", "ts_library", "web_module")
 load("@npm//jest:index.bzl", "jest_test")
+load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
+
+_DEPS = []
 
 ts_library(
     name = "compile",
@@ -11,6 +14,7 @@ ts_library(
         exclude = ["*.test.*"],
     ),
     tsconfig = "//:tsconfig.json",
+    deps = _DEPS,
 )
 
 ts_library(
@@ -41,4 +45,37 @@ jest_test(
         "JEST_ROOT_DIR": package_name(),
     },
     link_workspace_root = True,
+)
+
+filegroup(
+    name = "compile__esm",
+    srcs = [":compile"],
+    output_group = "es6_sources",
+)
+
+rollup_bundle(
+    name = "bundle",
+    config_file = "//:rollup.config.js",
+    entry_points = {
+        "index.ts": "index",
+    },
+    env = {
+        "IMPORTMAP_MODULE_NAME": package_name(),
+        "IMPORTMAP_OUTPUT_DIR": "bundle",
+    },
+    format = "system",
+    output_dir = True,
+    sourcemap = "true",
+    deps = [
+        ":compile__esm",
+        "@npm//@rollup/plugin-node-resolve",
+        "@npm//@rollup/plugin-replace",
+        "@npm//rollup-plugin-sourcemaps",
+    ],
+)
+
+web_module(
+    name = "button",
+    assets = ["bundle"],
+    copy_manifest_file = "bundle/importmap.json",
 )
