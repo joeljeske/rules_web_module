@@ -1,6 +1,5 @@
 import sourcemaps from "rollup-plugin-sourcemaps";
 import replace from "@rollup/plugin-replace";
-// import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from "@rollup/plugin-node-resolve";
 
 import * as path from "path";
@@ -13,6 +12,7 @@ const hash = (content) => {
     .digest("hex")
     .substring(0, 12);
 };
+
 const importmapPlugin = () => ({
   name: "importmapPlugin",
   generateBundle(options, bundle) {
@@ -46,5 +46,34 @@ const importmapPlugin = () => ({
 
 export default {
   output: {},
-  plugins: [sourcemaps(), importmapPlugin(), nodeResolve()],
+  onwarn(warning) {
+    // TODO: add exceptions for allowed warnings
+    throw new Error(warning.message);
+  },
+  external(source, importer, isResolved) {
+    // If no importer, then its included, its the main script
+    if (!importer) {
+      return false;
+    }
+    if (source.startsWith(".")) {
+      return false;
+    }
+
+    const includes = (process.env.IMPORTMAP_INCLUDES || "").split(",");
+    // TODO: add fuzzy matching / regex matching
+    const shouldBeIncluded = includes.some((incl) => incl === importer);
+    return shouldBeIncluded;
+  },
+  plugins: [
+    sourcemaps(),
+    importmapPlugin(),
+    nodeResolve(),
+    replace({
+      preventAssignment: true,
+      values: {
+        // TODO make env vars configurable, and respect "release" mode
+        "process.env.NODE_ENV": "production",
+      },
+    }),
+  ],
 };

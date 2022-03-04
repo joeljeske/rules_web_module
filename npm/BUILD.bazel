@@ -1,0 +1,47 @@
+load(":build.bzl", "npm_web_module")
+
+npm_web_module(
+    # The bazel target that libs dep on
+    name = "react",
+    # The "from" portion of the import statements
+    entry_point = "react",
+    # Which items to allow rollup to "include" vs mark as external
+    includes = [
+        "react",
+    ],
+    # The name with which other packages can refer to this bundle
+    module_name = "react",
+    # Which items do you want to re-export from this package?
+    named_exports = [
+        "default",
+    ],
+    # The deps to make available to the build.
+    # Types will be included downstream as well
+    deps = [
+        "@npm//@types/react",
+        "@npm//react",
+    ],
+)
+
+npm_web_module(
+    # The bazel target that libs dep on
+    name = "react-dom",
+    # The "from" portion of the import statements
+    entry_point = "react-dom",
+    # Which items to allow rollup to "include" vs mark as external
+    includes = [
+        "react-dom",
+    ],
+    # The name with which other packages can refer to this bundle
+    module_name = "react-dom",
+    # Which items do you want to re-export from this package?
+    named_exports = [
+        "default",
+    ],
+    # The deps to make available to the build.
+    # Types will be included downstream as well
+    deps = [
+        "@npm//@types/react-dom",
+        "@npm//react-dom",
+    ],
+)

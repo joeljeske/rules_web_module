@@ -10,6 +10,7 @@
     "@bazel/concatjs": "^5.2.0",
     "@bazel/rollup": "^5.2.0",
     "@bazel/typescript": "^5.2.0",
+    "@rollup/plugin-commonjs": "^21.0.2",
     "@rollup/plugin-node-resolve": "^13.1.3",
     "@rollup/plugin-replace": "^4.0.0",
     "@types/jest": "^27.4.1",
