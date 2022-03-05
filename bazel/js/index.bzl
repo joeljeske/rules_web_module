@@ -1,5 +1,9 @@
-load("@npm//@bazel/concatjs/internal:build_defs.bzl", _ts_library = "ts_library_macro")
-load(":web_module.bzl", _web_module = "web_module")
+load(":web_module_build.bzl", _web_module_build = "web_module_build")
+load(":npm_web_module_build.bzl", _npm_web_module_build = "npm_web_module_build")
+load("//bazel/js/devserver:index.bzl", _web_module_app_server = "web_module_app_server")
+load("//bazel/js/link_importmaps:index.bzl", _link_importmaps = "link_importmaps")
 
-ts_library = _ts_library
-web_module = _web_module
+web_module_build = _web_module_build
+npm_web_module_build = _npm_web_module_build
+web_module_app_server = _web_module_app_server
+link_importmaps = _link_importmaps

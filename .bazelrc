@@ -55,6 +55,9 @@ build --test_output=errors
 #   'none' to omit the summary
 build --test_summary=detailed
 
+build --enable_runfiles
+
+
 ###############################
 # Load any settings specific to the current user.
 # .bazelrc.user should appear in .gitignore so that settings are not shared with team members

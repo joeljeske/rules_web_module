@@ -1,0 +1,39 @@
+load("//bazel/js:index.bzl", "link_importmaps", "web_module_app_server", "web_module_build")
+load("//bazel/js:constants.bzl", "DEPS", "SRCS_EXCLUDE_PATTERNS", "SRCS_PATTERNS", "TEST_DEPS", "TEST_SRCS_PATTERNS")
+
+web_module_build(
+    name = "main",
+    srcs = glob(
+        SRCS_PATTERNS,
+        exclude = SRCS_EXCLUDE_PATTERNS,
+    ),
+    test_data = [],
+    test_deps = TEST_DEPS,
+    test_env = "jsdom",
+    test_srcs = glob(TEST_SRCS_PATTERNS),
+    deps = DEPS + [
+        "//npm:react",
+        "//npm:react/jsx-runtime",
+        "//npm:react-dom",
+        "//packages/menu",
+    ],
+)
+
+link_importmaps(
+    name = "linked",
+    out = "linked.importmap.json",
+    deps = [
+        ":main",
+        "//bazel/js/systemjs",
+    ],
+)
+
+web_module_app_server(
+    name = "serve",
+    data = [
+        ":linked",
+    ],
+    importmap = "linked.importmap.json",
+    index = "index.html",
+    loaders = ["systemjs"],
+)

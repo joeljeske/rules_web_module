@@ -1,5 +1,5 @@
 load(":provider.bzl", "rh_web_module_info")
-load("@build_bazel_rules_nodejs//:providers.bzl", "DeclarationInfo", "declaration_info")
+load("@build_bazel_rules_nodejs//:providers.bzl", "declaration_info")
 load("@rules_nodejs//nodejs:providers.bzl", "js_module_info")
 
 def _impl(ctx):
@@ -21,26 +21,18 @@ def _impl(ctx):
     else:
         manifest_file = ctx.file.manifest
 
-    # Build our own declaration info, to enable
-    # ts_library to verify checking against deps on transtives
-    self_declarations = [
-        t[DeclarationInfo].declarations
-        for t in ctx.attr.targets
-        if DeclarationInfo in t
-    ]
-
     return [
         js_module_info(
             sources = depset(),
             deps = ctx.attr.deps,
         ),
         declaration_info(
-            declarations = depset(transitive = self_declarations),
+            declarations = depset(),
             deps = ctx.attr.deps,
         ),
         rh_web_module_info(
-            assets = ctx.files.assets,
-            manifest = ctx.file.manifest,
+            assets = depset(ctx.files.assets),
+            manifest = depset([manifest_file]),
             deps = ctx.attr.deps,
         ),
         DefaultInfo(
@@ -61,11 +53,6 @@ web_module = rule(
         "assets": attr.label_list(
             doc = "a list of assets referenced to via the manifest",
             allow_files = True,
-        ),
-        # TODO: consolidate with deps. rollup_bundle loses our DeclarationInfo
-        "targets": attr.label_list(
-            doc = "The list of immediate deps, distinguished from transitive deps",
-            # providers = [RhWebModuleInfo],
         ),
         "deps": attr.label_list(
             doc = "The list of deps that are used by this module",

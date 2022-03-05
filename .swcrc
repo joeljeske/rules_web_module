@@ -1,0 +1,25 @@
+{
+  "module": {
+    "type": "es6"
+  },
+
+  "sourceMaps": "inline",
+  "inlineSourcesContent": true,
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "tsx": true,
+      "dynamicImport": true,
+      "exportNamespaceFrom": false
+    },
+    "transform": {
+      "react": {
+        "runtime": "automatic"
+      }
+    },
+    "target": "es2018",
+    "loose": false,
+    "externalHelpers": false,
+    "keepClassNames": false
+  }
+}

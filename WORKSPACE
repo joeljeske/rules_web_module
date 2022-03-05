@@ -4,7 +4,7 @@ workspace(
     # We don't need to do this because this is a "leaf" - we don't expect any
     # systems outside of Robinhood will have a dependency on this repo, so
     # this is unique enough for our global Bazel context.
-    name = "rules_web",
+    name = "rh",
 )
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -34,7 +34,9 @@ build_bazel_rules_nodejs_dependencies()
 
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "yarn_install")
 
-node_repositories()
+node_repositories(
+    node_version = "16.14.0",
+)
 
 yarn_install(
     name = "npm",
@@ -42,4 +44,31 @@ yarn_install(
     exports_directories_only = False,
     package_json = "//:package.json",
     yarn_lock = "//:yarn.lock",
+)
+
+http_archive(
+    name = "aspect_rules_swc",
+    sha256 = "206a89aae3a04831123b43962a3864e8ab1652b703c4af58d84b04174360137d",
+    strip_prefix = "rules_swc-0.4.0",
+    url = "https://github.com/aspect-build/rules_swc/archive/refs/tags/v0.4.0.tar.gz",
+)
+
+# Fetches the rules_swc dependencies.
+# If you want to have a different version of some dependency,
+# you should fetch it *before* calling this.
+# Alternatively, you can skip calling this function, so long as you've
+# already fetched all the dependencies.
+load("@aspect_rules_swc//swc:dependencies.bzl", "rules_swc_dependencies")
+
+rules_swc_dependencies()
+
+# Fetches a pre-built Rust-node binding from
+# https://github.com/swc-project/swc/releases.
+# If you'd rather compile it from source, you can use rules_rust, fetch the project,
+# then register the toolchain yourself. (Note, this is not yet documented)
+load("@aspect_rules_swc//swc:repositories.bzl", "swc_register_toolchains")
+
+swc_register_toolchains(
+    name = "swc",
+    swc_version = "v1.2.141",
 )

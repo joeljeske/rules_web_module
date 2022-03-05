@@ -1,5 +1,18 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "rootDirs": [
+      ".",
+      "./bazel-out/host/bin",
+      "./bazel-out/darwin-fastbuild/bin",
+      "./bazel-out/darwin_arm64-fastbuild/bin",
+      "./bazel-out/k8-fastbuild/bin",
+      "./bazel-out/x64_windows-fastbuild/bin",
+      "./bazel-out/darwin-dbg/bin",
+      "./bazel-out/darwin_arm64-dbg/bin",
+      "./bazel-out/k8-dbg/bin",
+      "./bazel-out/x64_windows-dbg/bin"
+    ],
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
@@ -7,16 +20,24 @@
     // "isolatedModules": true,
     "jsx": "react-jsx",
     "lib": ["dom", "dom.iterable", "es2015.iterable", "esnext"],
-    "module": "esnext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "noImplicitReturns": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noUnusedLocals": true,
     "pretty": true,
-    "rootDir": "./",
-    "sourceMap": true,
+    "sourceMap": false,
+    "inlineSourceMap": true,
+    "declaration": true,
+    "composite": true,
     "strict": true,
     "target": "es2018",
-    "noFallthroughCasesInSwitch": true
-  }
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "rh": ["."],
+      "rh/*": ["./*"]
+    }
+  },
+
+  "include": ["**/*.ts", "**/*.tsx"]
 }

@@ -1,0 +1,60 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
+load("//bazel/js:web_module.bzl", "web_module")
+
+ts_project(
+    name = "compile",
+    srcs = glob(["*.ts"]),
+    declaration = False,
+    extends = "//:tsconfig.json",
+    link_workspace_root = True,
+    tsconfig = {
+        "extends": "../../../../tsconfig.json",
+        "compilerOptions": {
+            "declaration": False,
+            "composite": False,
+            "module": "esnext",
+        },
+    },
+    deps = [
+        "@npm//@types/systemjs",
+    ],
+)
+
+rollup_bundle(
+    name = "bundle",
+    args = [
+        "--plugin=@rollup/plugin-node-resolve",
+        "--plugin=rollup-plugin-sourcemaps",
+    ],
+    config_file = "//:rollup.config.js",
+    entry_points = {
+        "index.js": "index",
+    },
+    env = {
+        "IMPORTMAP_MODULE_NAME": "systemjs",
+        "IMPORTMAP_OUTPUT_DIR": package_name() + "/bundle",
+        "IMPORTMAP_INCLUDES": "systemjs",
+    },
+    format = "iife",
+    link_workspace_root = True,
+    output_dir = True,
+    silent = True,
+    sourcemap = "true",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//bazel/js/rollup_importmap_plugin",
+        "@npm//@rollup/plugin-node-resolve",
+        "@npm//@rollup/plugin-replace",
+        "@npm//rollup-plugin-sourcemaps",
+        "@npm//systemjs",
+    ],
+)
+
+web_module(
+    name = "systemjs",
+    assets = ["bundle"],
+    copy_manifest_file = "bundle/importmap.json",
+    visibility = ["//visibility:public"],
+    deps = [":compile"],
+)

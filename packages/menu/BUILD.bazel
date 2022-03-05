@@ -2,7 +2,7 @@ load("//bazel/js:index.bzl", "web_module_build")
 load("//bazel/js:constants.bzl", "DEPS", "SRCS_EXCLUDE_PATTERNS", "SRCS_PATTERNS", "TEST_DEPS", "TEST_SRCS_PATTERNS")
 
 web_module_build(
-    name = "button",
+    name = "menu",
     srcs = glob(
         SRCS_PATTERNS,
         exclude = SRCS_EXCLUDE_PATTERNS,
@@ -11,6 +11,12 @@ web_module_build(
     test_deps = TEST_DEPS,
     test_env = "jsdom",
     test_srcs = glob(TEST_SRCS_PATTERNS),
-    visibility = ["//packages:__subpackages__"],
-    deps = DEPS + ["//npm:react"],
+    visibility = [
+        "//app:__subpackages__",
+        "//packages:__subpackages__",
+    ],
+    deps = DEPS + [
+        "//npm:react",
+        "//packages/button",
+    ],
 )

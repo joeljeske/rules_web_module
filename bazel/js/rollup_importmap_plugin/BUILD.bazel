@@ -1,0 +1,50 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
+
+ts_project(
+    name = "compile",
+    srcs = ["index.ts"],
+    declaration = False,
+    extends = "//:tsconfig.json",
+    link_workspace_root = True,
+    tsconfig = {
+        "extends": "../../../../tsconfig.json",
+        "compilerOptions": {
+            "declaration": False,
+            "composite": False,
+            "importHelpers": False,
+            "module": "esnext",
+        },
+    },
+    deps = [
+        "@npm//@types/node",
+        "@npm//multimatch",
+        "@npm//rollup",
+        "@npm//tslib",
+    ],
+)
+
+rollup_bundle(
+    name = "plugin",
+    args = [
+        "--plugin=@rollup/plugin-commonjs",
+        "--plugin=@rollup/plugin-node-resolve",
+    ],
+    entry_point = "index.js",
+    format = "cjs",
+    silent = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":compile",
+        "@npm//@rollup/plugin-commonjs",
+        "@npm//@rollup/plugin-node-resolve",
+    ],
+)
+
+filegroup(
+    name = "rollup_importmap_plugin",
+    srcs = [
+        "plugin.js",
+    ],
+    visibility = ["//visibility:public"],
+)

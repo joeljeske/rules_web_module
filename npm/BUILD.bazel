@@ -1,8 +1,8 @@
-load(":build.bzl", "npm_web_module")
+load("//bazel/js:index.bzl", "npm_web_module_build")
 
 package(default_visibility = ["//visibility:public"])
 
-npm_web_module(
+npm_web_module_build(
     # The bazel target that libs dep on
     name = "react",
     # The "from" portion of the import statements
@@ -25,7 +25,30 @@ npm_web_module(
     ],
 )
 
-npm_web_module(
+npm_web_module_build(
+    # The bazel target that libs dep on
+    name = "react/jsx-runtime",
+    # The "from" portion of the import statements
+    entry_point = "react/jsx-runtime",
+    # Which items to allow rollup to "include" vs mark as external
+    includes = [
+        "react/jsx-runtime",
+    ],
+    # The name with which other packages can refer to this bundle
+    module_name = "react/jsx-runtime",
+    # Which items do you want to re-export from this package?
+    named_exports = [
+        "jsx",
+        "jsxs",
+    ],
+    # The deps to make available to the build.
+    # Types will be included downstream as well
+    deps = [
+        "@npm//react",
+    ],
+)
+
+npm_web_module_build(
     # The bazel target that libs dep on
     name = "react-dom",
     # The "from" portion of the import statements
@@ -38,7 +61,7 @@ npm_web_module(
     module_name = "react-dom",
     # Which items do you want to re-export from this package?
     named_exports = [
-        "default",
+        "render",
     ],
     # The deps to make available to the build.
     # Types will be included downstream as well

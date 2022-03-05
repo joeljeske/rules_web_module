@@ -1,7 +1,8 @@
-import { Button } from "./index";
+import { Menu } from "./index";
 import { render } from "@testing-library/react";
 
 it("should mount", () => {
-  const { getByText } = render(<Button />);
+  const { getByText } = render(<Menu />);
+  getByText("Menu");
   getByText("Hello");
 });

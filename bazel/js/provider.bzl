@@ -9,8 +9,8 @@ RhWebModuleInfo = provider(
 )
 
 def rh_web_module_info(manifest, assets, deps = []):
-    transitive_assets = []
-    transitive_manifests = []
+    transitive_assets = [assets]
+    transitive_manifests = [manifest]
 
     for dep in deps:
         if RhWebModuleInfo in dep:
@@ -21,6 +21,6 @@ def rh_web_module_info(manifest, assets, deps = []):
     return RhWebModuleInfo(
         manifest = manifest,
         assets = assets,
-        transitive_manifests = depset([manifest], transitive = transitive_manifests),
-        transitive_assets = depset(assets, transitive = transitive_assets),
+        transitive_manifests = depset(transitive = transitive_manifests),
+        transitive_assets = depset(transitive = transitive_assets),
     )
