@@ -9,6 +9,7 @@ npm_web_module_build(
     entry_point = "react",
     # Which items to allow rollup to "include" vs mark as external
     includes = [
+        "object-assign",
         "react",
     ],
     # The name with which other packages can refer to this bundle
@@ -16,6 +17,7 @@ npm_web_module_build(
     # Which items do you want to re-export from this package?
     named_exports = [
         "default",
+        "useState",
     ],
     # The deps to make available to the build.
     # Types will be included downstream as well
@@ -32,6 +34,7 @@ npm_web_module_build(
     entry_point = "react/jsx-runtime",
     # Which items to allow rollup to "include" vs mark as external
     includes = [
+        "object-assign",
         "react/jsx-runtime",
     ],
     # The name with which other packages can refer to this bundle
@@ -55,7 +58,9 @@ npm_web_module_build(
     entry_point = "react-dom",
     # Which items to allow rollup to "include" vs mark as external
     includes = [
+        "object-assign",
         "react-dom",
+        "scheduler",
     ],
     # The name with which other packages can refer to this bundle
     module_name = "react-dom",

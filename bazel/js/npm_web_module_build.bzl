@@ -19,8 +19,6 @@ def npm_web_module_build(name, module_name, entry_point, deps = None, includes =
     target = name + "__bundle"
     entry_point_file = name + "__entry_point"
 
-    includes = includes or []
-
     write_file(
         name = entry_point_file,
         out = entry_point_file + ".js",
@@ -41,7 +39,7 @@ def npm_web_module_build(name, module_name, entry_point, deps = None, includes =
         env = {
             "IMPORTMAP_MODULE_NAME": module_name,
             "IMPORTMAP_OUTPUT_DIR": native.package_name() + "/" + target,
-            "IMPORTMAP_INCLUDES": ",".join(includes),
+            "IMPORTMAP_INCLUDES": ",".join(includes or []),
         },
         args = [
             "--plugin=@rollup/plugin-commonjs",

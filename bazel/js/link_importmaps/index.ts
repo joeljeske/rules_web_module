@@ -18,7 +18,7 @@ async function main([out, bom]: string[]) {
         if (name in linkedImportmap.imports) {
           // TODO more descriptive
           throw new Error(
-            `[MODULE_CONFLICT] Conflicting module definitions for ${name}`
+            `[MODULE_CONFLICT] Conflicting module definitions for "${name}"`
           );
         }
         linkedImportmap.imports[name] = def;

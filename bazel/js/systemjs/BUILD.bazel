@@ -34,7 +34,10 @@ rollup_bundle(
     env = {
         "IMPORTMAP_MODULE_NAME": "systemjs",
         "IMPORTMAP_OUTPUT_DIR": package_name() + "/bundle",
-        "IMPORTMAP_INCLUDES": "systemjs",
+        "IMPORTMAP_INCLUDES": ",".join([
+            "systemjs",
+            "systemjs/**",
+        ]),
     },
     format = "iife",
     link_workspace_root = True,

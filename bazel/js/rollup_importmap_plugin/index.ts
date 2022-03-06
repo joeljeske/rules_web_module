@@ -1,4 +1,4 @@
-import { Plugin } from "rollup";
+import { Plugin, ExternalOption } from "rollup";
 import * as path from "path";
 import * as crypto from "crypto";
 import multimatch from "multimatch";
@@ -10,20 +10,17 @@ const hash = (content: string) => {
     .digest("hex")
     .substring(0, 12);
 };
-export interface ImportmapPluginOpts {
-  moduleName: string;
-  importmapFilename: string;
-  outputDir?: string;
-  optimized: boolean;
+
+export interface ImportmapExternalOpts {
   includes: string[];
 }
-
-export const importmapPlugin = (opts: ImportmapPluginOpts): Plugin => ({
-  name: "importmapPlugin",
-  resolveId(source, importer, options) {
-    if (!importer || options?.isEntry) {
+export const importmapExternals = (
+  opts: ImportmapExternalOpts
+): ExternalOption => {
+  return (source, importer) => {
+    if (!importer) {
       // Allow default behavior for entry points
-      return null;
+      return false;
     }
 
     if (
@@ -32,20 +29,27 @@ export const importmapPlugin = (opts: ImportmapPluginOpts): Plugin => ({
       source.startsWith("../")
     ) {
       // Force resolution for all relative lookups
-      return null;
+      return false;
     }
 
-    if (opts.includes.length && multimatch(source, opts.includes)) {
-      // importmapPluginData.seen = true;
-      return null;
+    if (multimatch(source, opts.includes).length) {
+      // Any matching the includes are allowed to be bundled
+      return false;
     }
 
     // Consider all others to be external
-    return {
-      id: source,
-      external: true,
-    };
-  },
+    return true;
+  };
+};
+
+export interface ImportmapPluginOpts {
+  moduleName: string;
+  importmapFilename: string;
+  outputDir?: string;
+  optimized: boolean;
+}
+export const importmapPlugin = (opts: ImportmapPluginOpts): Plugin => ({
+  name: "importmapPlugin",
   generateBundle(outputOptions, bundle) {
     let bundleDir = opts.outputDir || "";
     if (!bundleDir) {
