@@ -1,5 +1,6 @@
 load("//bazel/js:provider.bzl", "rh_web_module_info")
 load("@build_bazel_rules_nodejs//:providers.bzl", "run_node")
+load("//bazel/js/env:index.bzl", "js_env_transition")
 
 def _impl(ctx):
     web_modules = rh_web_module_info(
@@ -47,6 +48,7 @@ link_importmaps = rule(
     attrs = {
         "deps": attr.label_list(
             doc = "List of web modules that should be linked together into a single importmap",
+            cfg = js_env_transition,
             # providers: [RhWebModuleInfo]
         ),
         "out": attr.output(
@@ -60,5 +62,9 @@ link_importmaps = rule(
         "link_workspace_root": attr.bool(
             # doc TODO
         ),
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
+        ),
+        "js_env": attr.string_dict(),
     },
 )

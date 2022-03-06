@@ -92,11 +92,12 @@ def web_module_build(name, srcs, deps, test_srcs, test_deps, test_data, test_env
             "IMPORTMAP_OUTPUT_DIR": module_name + "/bundle",
         },
         link_workspace_root = True,
-        format = "system",
         output_dir = True,
         sourcemap = "true",
         deps = [
             ":esm",
+            "@npm//rollup-plugin-esbuild",
+            "//bazel/js/env:inject.js",
             "@npm//@rollup/plugin-commonjs",
             "@npm//@rollup/plugin-node-resolve",
             "@npm//@rollup/plugin-replace",

@@ -1,0 +1,14 @@
+load("@bazel_skylib//rules:common_settings.bzl", "string_list_flag")
+load(":node_inject.bzl", "node_inject")
+
+# TODO Probably split this into first-class configs, instead of
+# random KVP. Too easy of a footgun like this probably
+string_list_flag(
+    name = "env",
+    build_setting_default = [],
+)
+
+node_inject(
+    name = "inject.js",
+    visibility = ["//visibility:public"],
+)

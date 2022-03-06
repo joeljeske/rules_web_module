@@ -1,3 +1,4 @@
+import "rh/bazel/js/env/inject";
 import sourcemaps from "rollup-plugin-sourcemaps";
 import replace from "@rollup/plugin-replace";
 import nodeResolve from "@rollup/plugin-node-resolve";
@@ -6,8 +7,10 @@ import {
   importmapExternals,
 } from "rh/bazel/js/rollup_importmap_plugin/plugin";
 
-export default {
-  output: {},
+export default async () => ({
+  output: {
+    format: process.env.JS_BUNDLE_FORMAT,
+  },
   onwarn(warning) {
     // TODO: add exceptions for allowed warnings
     throw new Error(warning.message);
@@ -20,16 +23,18 @@ export default {
       moduleName: process.env.IMPORTMAP_MODULE_NAME,
       importmapFilename: "importmap.json",
       outputDir: process.env.IMPORTMAP_OUTPUT_DIR,
-      optimized: false,
+      optimized: process.env.NODE_ENV === "production",
     }),
     sourcemaps(),
     nodeResolve(),
     replace({
       preventAssignment: true,
       values: {
-        // TODO make env vars configurable, and respect "release" mode
-        "process.env.NODE_ENV": JSON.stringify("production"),
+        "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
       },
     }),
+    process.env.NODE_ENV === "production"
+      ? (await import("rollup-plugin-esbuild")).minify()
+      : {},
   ],
-};
+});

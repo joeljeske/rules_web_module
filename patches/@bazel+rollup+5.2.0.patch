@@ -1,7 +1,16 @@
 diff --git a/node_modules/@bazel/rollup/rollup_bundle.bzl b/node_modules/@bazel/rollup/rollup_bundle.bzl
-index 9f52eff..4a5b22e 100755
+index 9f52eff..8dc7c13 100755
 --- a/node_modules/@bazel/rollup/rollup_bundle.bzl
 +++ b/node_modules/@bazel/rollup/rollup_bundle.bzl
+@@ -99,7 +99,7 @@ Either this attribute or `entry_point` must be specified, but not both.
+ - `system`: Native format of the SystemJS loader
+ """,
+         values = ["amd", "cjs", "esm", "iife", "umd", "system"],
+-        default = "esm",
++        # default = "esm",
+     ),
+     "link_workspace_root": attr.bool(
+         doc = """Link the workspace root to the bin_dir to support absolute requires like 'my_wksp/path/to/file'.
 @@ -120,7 +120,6 @@ Otherwise, the outputs are assumed to be a single file.
          executable = True,
          cfg = "exec",
@@ -18,7 +27,17 @@ index 9f52eff..4a5b22e 100755
  }
  
  def _desugar_entry_point_names(name, entry_point, entry_points):
-@@ -341,7 +341,7 @@ def _rollup_bundle(ctx):
+@@ -295,7 +295,8 @@ def _rollup_bundle(ctx):
+         args.add(entry_points[0][0])
+         args.add_all(["--output.file", outputs[0].path])
+ 
+-    args.add_all(["--format", ctx.attr.format])
++    if ctx.attr.format:
++        args.add_all(["--format", ctx.attr.format])
+ 
+     if ctx.attr.silent:
+         # Run the rollup binary with the --silent flag
+@@ -341,7 +342,7 @@ def _rollup_bundle(ctx):
          arguments = [args],
          mnemonic = "Rollup",
          execution_requirements = execution_requirements,

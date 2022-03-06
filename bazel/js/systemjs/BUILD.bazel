@@ -46,9 +46,11 @@ rollup_bundle(
     sourcemap = "true",
     visibility = ["//visibility:public"],
     deps = [
+        "//bazel/js/env:inject.js",
         "//bazel/js/rollup_importmap_plugin",
         "@npm//@rollup/plugin-node-resolve",
         "@npm//@rollup/plugin-replace",
+        "@npm//rollup-plugin-esbuild",
         "@npm//rollup-plugin-sourcemaps",
         "@npm//systemjs",
     ],

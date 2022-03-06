@@ -22,6 +22,10 @@ web_module_build(
 link_importmaps(
     name = "linked",
     out = "linked.importmap.json",
+    js_env = {
+        "JS_BUNDLE_FORMAT": "systemjs",
+        "NODE_ENV": "production",
+    },
     deps = [
         ":main",
         "//bazel/js/systemjs",

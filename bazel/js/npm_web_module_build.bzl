@@ -45,10 +45,11 @@ def npm_web_module_build(name, module_name, entry_point, deps = None, includes =
             "--plugin=@rollup/plugin-commonjs",
         ],
         link_workspace_root = True,
-        format = "system",
         output_dir = True,
         sourcemap = "true",
         deps = deps + [
+            "//bazel/js/env:inject.js",
+            "@npm//rollup-plugin-esbuild",
             "@npm//@rollup/plugin-node-resolve",
             "@npm//@rollup/plugin-commonjs",
             "@npm//@rollup/plugin-replace",

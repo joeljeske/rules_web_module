@@ -61,6 +61,7 @@ npm_web_module_build(
         "object-assign",
         "react-dom",
         "scheduler",
+        "scheduler/**",
     ],
     # The name with which other packages can refer to this bundle
     module_name = "react-dom",
