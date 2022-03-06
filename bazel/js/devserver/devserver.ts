@@ -46,7 +46,16 @@ const createIndexHtml = async () => {
 const app = express();
 
 app.use(express.static(process.cwd()));
-app.use(async function (req: express.Request, res: express.Response) {
+app.use(async function (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  // Be helpful and don't respond to missing static assets with a HTML response
+  // req.accepts() doesn't work here since some assets accept */*
+  if (!(req.header("accept") || "").includes("text/html")) {
+    return next();
+  }
   try {
     const data = await createIndexHtml();
     res.status(200);

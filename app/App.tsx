@@ -1,11 +1,11 @@
-import { FC } from "react";
+import { FC, Suspense } from "react";
 import { Menu } from "rh/packages/menu";
 
 export const App: FC = () => {
   return (
-    <div>
+    <Suspense fallback="Loading...">
       <h1>Hello, World</h1>
       <Menu />
-    </div>
+    </Suspense>
   );
 };

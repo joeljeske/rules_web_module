@@ -10,6 +10,9 @@ import {
 export default async () => ({
   output: {
     format: process.env.JS_BUNDLE_FORMAT,
+    entryFileNames: "[name].js",
+    chunkFileNames: "[name].js",
+    assetFileNames: "[name].js",
   },
   onwarn(warning) {
     // TODO: add exceptions for allowed warnings

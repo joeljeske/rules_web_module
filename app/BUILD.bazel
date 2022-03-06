@@ -13,7 +13,6 @@ web_module_build(
     test_srcs = glob(TEST_SRCS_PATTERNS),
     deps = DEPS + [
         "//npm:react",
-        "//npm:react/jsx-runtime",
         "//npm:react-dom",
         "//packages/menu",
     ],
@@ -24,11 +23,12 @@ link_importmaps(
     out = "linked.importmap.json",
     js_env = {
         "JS_BUNDLE_FORMAT": "systemjs",
-        "NODE_ENV": "production",
+        "NODE_ENV": "development",
     },
     deps = [
         ":main",
         "//bazel/js/systemjs",
+        "//npm:react/jsx-runtime",
     ],
 )
 

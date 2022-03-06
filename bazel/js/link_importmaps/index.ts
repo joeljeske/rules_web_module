@@ -23,6 +23,15 @@ async function main([out, bom]: string[]) {
         }
         linkedImportmap.imports[name] = def;
       });
+      Object.entries(importmapPartial.scopes).forEach(([name, def]) => {
+        if (name in linkedImportmap.scopes) {
+          // TODO more descriptive
+          throw new Error(
+            `[MODULE_CONFLICT] Conflicting scope definitions for "${name}"`
+          );
+        }
+        linkedImportmap.scopes[name] = def;
+      });
     })
   );
 

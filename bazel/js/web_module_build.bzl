@@ -5,22 +5,6 @@ load("@npm//jest:index.bzl", "jest_test")
 load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
 load("@aspect_rules_swc//swc:swc.bzl", "swc_transpiler")
 
-def _impl(ctx):
-    # print(ctx.label)
-    # print(ctx.attr.impl[JSModuleInfo])
-    # print("\n".join(
-    #     [f.path for f in ctx.attr.impl[JSModuleInfo].sources.to_list()],
-    # ))
-    return [
-    ]
-
-insp = rule(
-    implementation = _impl,
-    attrs = {
-        "impl": attr.label(),
-    },
-)
-
 def web_module_build(name, srcs, deps, test_srcs, test_deps, test_data, test_env = "node", visibility = []):
     module_name = native.package_name()
 
@@ -33,8 +17,6 @@ def web_module_build(name, srcs, deps, test_srcs, test_deps, test_data, test_env
         link_workspace_root = True,
         deps = deps,
     )
-
-    insp(name = "___", impl = "compile")
 
     ts_project(
         tsconfig = "//:tsconfig.json",
@@ -60,6 +42,7 @@ def web_module_build(name, srcs, deps, test_srcs, test_deps, test_data, test_env
         data = test_deps + [
             ":test_compile",
             "//:jest.config.js",
+            "@npm//react",
         ],
         env = {
             "JEST_ROOT_DIR": native.package_name(),
@@ -96,11 +79,11 @@ def web_module_build(name, srcs, deps, test_srcs, test_deps, test_data, test_env
         sourcemap = "true",
         deps = [
             ":esm",
-            "@npm//rollup-plugin-esbuild",
             "//bazel/js/env:inject.js",
             "@npm//@rollup/plugin-commonjs",
             "@npm//@rollup/plugin-node-resolve",
             "@npm//@rollup/plugin-replace",
+            "@npm//rollup-plugin-esbuild",
             "@npm//rollup-plugin-sourcemaps",
             "//bazel/js/rollup_importmap_plugin",
         ],
