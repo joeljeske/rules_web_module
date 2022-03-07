@@ -43,6 +43,6 @@ NPM deps have hand-crafted targets that describe how the bundling should be done
 
 Lots to do, including:
 
-[ ] Static assets via file_loader should have their urls available in JS both in test/dev/prod
-[ ] Importmap linker should validate the importmap at merge time, to ensure that all deps are available and valid
-[ ] Importmap optimizer should flatten and optimize the importmap to serve assets from a single directory
+- [ ] Static assets via file_loader should have their urls available in JS both in test/dev/prod
+- [ ] Importmap linker should validate the importmap at merge time, to ensure that all deps are available and valid
+- [ ] Importmap optimizer should flatten and optimize the importmap to serve assets from a single directory
