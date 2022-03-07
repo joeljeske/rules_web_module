@@ -31,7 +31,7 @@ async function main(args: string[]) {
 
   const roots = [packageName, path.join(binDir, packageName)];
   const optimized = process.env.NODE_ENV === "production";
-  const importMap: any = { scopes: {}, imports: {} };
+  const importMap: any = { scopes: {}, imports: {}, depcache: {} };
   await Promise.all(
     assets.map(async (filePath) => {
       const root = roots.find((root) => filePath.startsWith(root));

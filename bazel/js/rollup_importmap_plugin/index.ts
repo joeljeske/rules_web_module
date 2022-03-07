@@ -61,7 +61,10 @@ export const importmapPlugin = (opts: ImportmapPluginOpts): Plugin => ({
     const importMap: any = {
       imports: {} as any,
       scopes: {} as any,
-      deps: {} as any,
+      // non standard
+      // https://github.com/systemjs/systemjs/blob/main/docs/import-maps.md#depcache
+      depcache: {} as any,
+      linkerMeta: {} as any,
     };
 
     // First, generate hashes of all the filenames, so we know where to put them
@@ -111,8 +114,13 @@ export const importmapPlugin = (opts: ImportmapPluginOpts): Plugin => ({
           importMap.scopes[filePath] = scopes;
         }
 
+        importMap.depcache[filePath] = info.imports.map((dep) =>
+          // Relative imports need to be marked as so, as opposed to bare import
+          dep in bundle ? `./${dep}` : dep
+        );
+
         // Save all the deps and their namedImports in the importMap
-        importMap.deps[filePath] = {
+        importMap.linkerMeta[filePath] = {
           imports: Object.assign(
             {},
             // dynamic imports don't have the exports used on them
