@@ -42,6 +42,7 @@ def npm_web_module_build(name, module_name, entry_point, deps = None, includes =
             "IMPORTMAP_INCLUDES": ",".join(includes or []),
         },
         args = [
+            "--node_options=--require=rh/bazel/js/env/inject.js",
             "--plugin=@rollup/plugin-commonjs",
         ],
         link_workspace_root = True,

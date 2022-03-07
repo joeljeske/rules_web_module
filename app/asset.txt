@@ -1,0 +1,1 @@
+This is an asset that is not processed by TSC, SWC, ESBuild, or Rollup.

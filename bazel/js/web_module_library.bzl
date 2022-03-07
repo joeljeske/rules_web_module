@@ -44,6 +44,9 @@ def web_module_library(name, srcs, deps, **kwargs):
             "IMPORTMAP_MODULE_NAME": "rh/" + module_name,
             "IMPORTMAP_OUTPUT_DIR": module_name + "/" + target_bundle,
         },
+        args = [
+            "--node_options=--require=rh/bazel/js/env/inject.js",
+        ],
         link_workspace_root = True,
         output_dir = True,
         sourcemap = "true",

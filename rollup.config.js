@@ -1,4 +1,3 @@
-import "rh/bazel/js/env/inject";
 import sourcemaps from "rollup-plugin-sourcemaps";
 import replace from "@rollup/plugin-replace";
 import nodeResolve from "@rollup/plugin-node-resolve";

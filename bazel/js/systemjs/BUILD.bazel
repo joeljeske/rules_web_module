@@ -24,6 +24,7 @@ ts_project(
 rollup_bundle(
     name = "bundle",
     args = [
+        "--node_options=--require=rh/bazel/js/env/inject.js",
         "--plugin=@rollup/plugin-node-resolve",
         "--plugin=rollup-plugin-sourcemaps",
     ],

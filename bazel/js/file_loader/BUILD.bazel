@@ -1,0 +1,28 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+
+ts_project(
+    name = "compile",
+    srcs = ["index.ts"],
+    composite = True,
+    declaration = True,
+    link_workspace_root = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "@npm//@types/node",
+        "@npm//tslib",
+    ],
+)
+
+nodejs_binary(
+    name = "tool",
+    data = [
+        "compile",
+        "//bazel/js/env:inject.js",
+    ],
+    entry_point = ":index.js",
+    templated_args = [
+        "--node_options=--require=$$(rlocation $(rootpath //bazel/js/env:inject.js))",
+    ],
+    visibility = ["//visibility:public"],
+)
