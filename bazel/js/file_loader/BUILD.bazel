@@ -2,8 +2,8 @@ load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
 
 ts_project(
-    name = "compile",
-    srcs = ["index.ts"],
+    name = "loader-compile",
+    srcs = ["loader.ts"],
     composite = True,
     declaration = True,
     link_workspace_root = True,
@@ -15,12 +15,12 @@ ts_project(
 )
 
 nodejs_binary(
-    name = "tool",
+    name = "loader-tool",
     data = [
-        "compile",
+        "loader-compile",
         "//bazel/js/env:inject.js",
     ],
-    entry_point = ":index.js",
+    entry_point = ":loader.js",
     templated_args = [
         "--node_options=--require=$$(rlocation $(rootpath //bazel/js/env:inject.js))",
     ],

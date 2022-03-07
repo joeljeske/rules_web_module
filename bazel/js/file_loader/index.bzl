@@ -7,13 +7,15 @@ def web_module_file_loader(name, assets, module_name, **kwargs):
 
     npm_package_bin(
         name = target_prepare,
-        tool = "//bazel/js/file_loader:tool",
+        tool = "//bazel/js/file_loader:loader-tool",
         output_dir = True,
         data = assets,
         args = [
             "$(@D)",
             manifest_name,
             module_name,
+            native.package_name(),
+            "$(GENDIR)",
             (native.package_name() + "/" + target_prepare),
         ] + [
             "$(location %s)" % asset

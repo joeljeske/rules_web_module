@@ -19,11 +19,28 @@ const getFileHash = (filePath: string) =>
   });
 
 async function main(args: string[]) {
-  const [outDir, manifestName, moduleName, bundleDir, ...assets] = args;
+  const [
+    outDir,
+    manifestName,
+    moduleName,
+    packageName,
+    binDir,
+    bundleDir,
+    ...assets
+  ] = args;
+
+  const roots = [packageName, path.join(binDir, packageName)];
   const optimized = process.env.NODE_ENV === "production";
   const importMap: any = { scopes: {}, imports: {} };
   await Promise.all(
     assets.map(async (filePath) => {
+      const root = roots.find((root) => filePath.startsWith(root));
+      if (!root) {
+        throw new Error(
+          `Asset "${filePath}" was not found to be in the current package: "${packageName}"`
+        );
+      }
+      const packageRelativeAssetName = path.relative(root, filePath);
       const hash = await getFileHash(filePath);
       const basename = path.basename(filePath);
       const ext = path.extname(basename);
@@ -32,11 +49,8 @@ async function main(args: string[]) {
         outputName = path.basename(basename, ext) + "." + outputName;
       }
       await fs.promises.copyFile(filePath, path.join(outDir, outputName));
-      importMap.imports[path.join(moduleName, basename)] = path.join(
-        "/",
-        bundleDir,
-        outputName
-      );
+      importMap.imports[path.join(moduleName, packageRelativeAssetName)] =
+        path.join("/", bundleDir, outputName);
     })
   );
 

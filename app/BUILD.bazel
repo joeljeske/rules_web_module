@@ -2,9 +2,9 @@ load("//bazel/js:index.bzl", "link_importmaps", "web_module_app_server", "web_mo
 load("//bazel/js:constants.bzl", "DEPS", "SRCS_EXCLUDE_PATTERNS", "SRCS_PATTERNS", "TEST_DEPS", "TEST_SRCS_PATTERNS")
 
 web_module_file_loader(
-    name = "assets",
-    assets = ["asset.txt"],
-    module_name = "assets",
+    name = "static-assets",
+    assets = glob(["assets/*"]),
+    module_name = "static",
 )
 
 web_module_library(
@@ -14,7 +14,7 @@ web_module_library(
         exclude = SRCS_EXCLUDE_PATTERNS,
     ),
     deps = DEPS + [
-        "assets",
+        ":static-assets",
         "//npm:react",
         "//npm:react-dom",
         "//packages/menu",
