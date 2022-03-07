@@ -18,8 +18,20 @@ npm_web_module_build(
     named_exports = [
         "default",
         "useState",
+        "useRef",
+        "createElement",
+        "useEffect",
+        "useContext",
+        "useLayoutEffect",
+        "useMemo",
+        "useCallback",
+        "useReducer",
         "lazy",
         "Suspense",
+        "createContext",
+        "isValidElement",
+        "forwardRef",
+        "Children",
     ],
     # The deps to make available to the build.
     # Types will be included downstream as well
@@ -76,5 +88,29 @@ npm_web_module_build(
     deps = [
         "@npm//@types/react-dom",
         "@npm//react-dom",
+    ],
+)
+
+npm_web_module_build(
+    # The bazel target that libs dep on
+    name = "react-router-dom",
+    # The "from" portion of the import statements
+    entry_point = "react-router-dom",
+    export_star = True,
+    # Which items to allow rollup to "include" vs mark as external
+    includes = [
+        # "object-assign",
+        "react-router-dom",
+        "history",
+        "@babel/runtime/**",
+        "react-router",
+    ],
+    # The name with which other packages can refer to this bundle
+    module_name = "react-router-dom",
+    # The deps to make available to the build.
+    # Types will be included downstream as well
+    deps = [
+        # "@npm//@types/react",
+        "@npm//react-router-dom",
     ],
 )

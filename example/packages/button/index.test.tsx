@@ -5,8 +5,8 @@ import { Suspense } from "react";
 it("should mount", () => {
   const { getByText } = render(
     <Suspense fallback="Loading...">
-      <Button onClick={() => null} />
+      <Button onClick={() => null}>Button Text</Button>
     </Suspense>
   );
-  getByText("Hello");
+  getByText("Button Text");
 });

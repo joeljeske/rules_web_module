@@ -1,28 +1,11 @@
-import { FC, lazy, Suspense } from "react";
-import { Menu } from "rh/example/packages/menu";
-
-const AssetLink = lazy(async () => {
-  const assetUrl = await import.meta.resolve(
-    // module_name: static
-    // relative path: assets/asset.txt
-    "static/assets/asset.txt"
-  );
-  return {
-    default: () => (
-      <a href={assetUrl} target="_blank">
-        Download Asset
-      </a>
-    ),
-  };
-});
+import { FC, Suspense } from "react";
+import { AppRouter } from "./AppRouter";
 
 export const App: FC = () => {
   return (
     <Suspense fallback="Loading...">
-      <h1>Hello, World</h1>
-      <Menu />
-
-      <AssetLink />
+      <h1>Welcome to the example app</h1>
+      <AppRouter />
     </Suspense>
   );
 };

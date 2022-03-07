@@ -2,12 +2,16 @@ import { Menu } from "./index";
 import { render } from "@testing-library/react";
 import { Suspense } from "react";
 
-it("should mount", () => {
+it("should mount", async () => {
   const { getByText } = render(
     <Suspense fallback="Loading...">
-      <Menu />
+      <Menu>Welcome!</Menu>
     </Suspense>
   );
-  getByText("Menu");
-  getByText("Hello");
+  getByText("Welcome!");
+
+  getByText("Hide Menu").click();
+  getByText("Show Menu");
+
+  expect(() => getByText("Welcome!")).toThrow;
 });

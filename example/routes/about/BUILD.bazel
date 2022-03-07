@@ -1,0 +1,12 @@
+load("//bazel/js:index.bzl", "web_module_library")
+load("//bazel/js:constants.bzl", "DEPS", "SRCS_EXCLUDE_PATTERNS", "SRCS_PATTERNS")
+
+web_module_library(
+    name = "about",
+    srcs = glob(
+        SRCS_PATTERNS,
+        exclude = SRCS_EXCLUDE_PATTERNS,
+    ),
+    visibility = ["//example:__subpackages__"],
+    deps = DEPS + ["//npm:react"],
+)
