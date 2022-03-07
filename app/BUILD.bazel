@@ -1,20 +1,29 @@
-load("//bazel/js:index.bzl", "link_importmaps", "web_module_app_server", "web_module_build")
+load("//bazel/js:index.bzl", "link_importmaps", "web_module_app_server", "web_module_library", "web_module_test")
 load("//bazel/js:constants.bzl", "DEPS", "SRCS_EXCLUDE_PATTERNS", "SRCS_PATTERNS", "TEST_DEPS", "TEST_SRCS_PATTERNS")
 
-web_module_build(
+web_module_library(
     name = "main",
     srcs = glob(
         SRCS_PATTERNS,
         exclude = SRCS_EXCLUDE_PATTERNS,
     ),
-    test_data = [],
-    test_deps = TEST_DEPS,
-    test_env = "jsdom",
-    test_srcs = glob(TEST_SRCS_PATTERNS),
     deps = DEPS + [
         "//npm:react",
         "//npm:react-dom",
         "//packages/menu",
+    ],
+)
+
+web_module_test(
+    name = "test",
+    srcs = glob(TEST_SRCS_PATTERNS),
+    data = [],
+    # TODO
+    # Tests fail due to https://github.com/bazelbuild/rules_nodejs/pull/3356
+    expected_exit_code = 1,
+    test_env = "jsdom",
+    deps = TEST_DEPS + [
+        ":main",
     ],
 )
 

@@ -1,16 +1,19 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load(":web_module.bzl", "web_module")
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
-load("@npm//jest:index.bzl", "jest_test")
 load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
 load("@aspect_rules_swc//swc:swc.bzl", "swc_transpiler")
 
-def web_module_build(name, srcs, deps, test_srcs, test_deps, test_data, test_env = "node", visibility = []):
+def web_module_library(name, srcs, deps, **kwargs):
     module_name = native.package_name()
+
+    target_compile = name + "__compile"
+    target_transpile = name + "__transpile"
+    target_bundle = name + "__bundle"
 
     ts_project(
         tsconfig = "//:tsconfig.json",
-        name = "compile",
+        name = target_compile,
         srcs = srcs,
         composite = True,
         declaration = True,
@@ -18,41 +21,8 @@ def web_module_build(name, srcs, deps, test_srcs, test_deps, test_data, test_env
         deps = deps,
     )
 
-    ts_project(
-        tsconfig = "//:tsconfig.json",
-        name = "test_compile",
-        srcs = test_srcs,
-        composite = True,
-        declaration = True,
-        link_workspace_root = True,
-        deps = deps + test_deps + [
-            ":compile",
-        ],
-    )
-
-    jest_test(
-        name = "test",
-        args = [
-            "--config $(execpath //:jest.config.js)",
-            "--no-cache",
-            "--no-watchman",
-            "--ci",
-            "--runInBand",
-        ],
-        data = test_deps + [
-            ":test_compile",
-            "//:jest.config.js",
-            "@npm//react",
-        ],
-        env = {
-            "JEST_ROOT_DIR": native.package_name(),
-            "JEST_TEST_ENVIRONMENT": test_env,
-        },
-        link_workspace_root = True,
-    )
-
     swc_transpiler(
-        name = "esm",
+        name = target_transpile,
         srcs = srcs,
         js_outs = [
             paths.replace_extension(f, ".mjs")
@@ -63,7 +33,7 @@ def web_module_build(name, srcs, deps, test_srcs, test_deps, test_data, test_env
     )
 
     rollup_bundle(
-        name = "bundle",
+        name = target_bundle,
         config_file = "//:rollup.config.js",
         entry_points = {
             # TODO: Configurable entrypoint(s)
@@ -72,13 +42,13 @@ def web_module_build(name, srcs, deps, test_srcs, test_deps, test_data, test_env
         env = {
             # TODO make repo name dynamic
             "IMPORTMAP_MODULE_NAME": "rh/" + module_name,
-            "IMPORTMAP_OUTPUT_DIR": module_name + "/bundle",
+            "IMPORTMAP_OUTPUT_DIR": module_name + "/" + target_bundle,
         },
         link_workspace_root = True,
         output_dir = True,
         sourcemap = "true",
         deps = [
-            ":esm",
+            target_transpile,
             "//bazel/js/env:inject.js",
             "@npm//@rollup/plugin-commonjs",
             "@npm//@rollup/plugin-node-resolve",
@@ -92,8 +62,8 @@ def web_module_build(name, srcs, deps, test_srcs, test_deps, test_data, test_env
 
     web_module(
         name = name,
-        assets = [":bundle"],
-        deps = [":compile"] + deps,
-        copy_manifest_file = "bundle/importmap.json",
-        visibility = visibility,
+        assets = [target_bundle],
+        deps = [target_compile] + deps,
+        copy_manifest_file = target_bundle + "/importmap.json",
+        **kwargs
     )

@@ -1,16 +1,22 @@
-load("//bazel/js:index.bzl", "web_module_build")
+load("//bazel/js:index.bzl", "web_module_library", "web_module_test")
 load("//bazel/js:constants.bzl", "DEPS", "SRCS_EXCLUDE_PATTERNS", "SRCS_PATTERNS", "TEST_DEPS", "TEST_SRCS_PATTERNS")
 
-web_module_build(
+web_module_library(
     name = "button",
     srcs = glob(
         SRCS_PATTERNS,
         exclude = SRCS_EXCLUDE_PATTERNS,
     ),
-    test_data = [],
-    test_deps = TEST_DEPS,
-    test_env = "jsdom",
-    test_srcs = glob(TEST_SRCS_PATTERNS),
     visibility = ["//packages:__subpackages__"],
     deps = DEPS + ["//npm:react"],
+)
+
+web_module_test(
+    name = "test",
+    srcs = glob(TEST_SRCS_PATTERNS),
+    data = [],
+    test_env = "jsdom",
+    deps = TEST_DEPS + [
+        ":button",
+    ],
 )
