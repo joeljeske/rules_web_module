@@ -1,4 +1,4 @@
-load("//bazel/js:index.bzl", "link_importmaps", "web_module_app_server", "web_module_file_loader", "web_module_library", "web_module_test")
+load("//bazel/js:index.bzl", "link_web_modules", "web_module_app_server", "web_module_file_loader", "web_module_library", "web_module_test")
 load("//bazel/js:constants.bzl", "DEPS", "SRCS_EXCLUDE_PATTERNS", "SRCS_PATTERNS", "TEST_DEPS", "TEST_SRCS_PATTERNS")
 
 # Loading static assets into the bundle (assets could be pre-processed as needed)
@@ -39,9 +39,9 @@ web_module_test(
     ],
 )
 
-link_importmaps(
-    name = "linked",
-    out = "linked.importmap.json",
+link_web_modules(
+    name = "dev_build",
+    out = "dev.importmap.json",
     js_env = {
         "JS_BUNDLE_FORMAT": "systemjs",
         "NODE_ENV": "development",
@@ -55,10 +55,31 @@ link_importmaps(
 
 web_module_app_server(
     name = "serve",
-    data = [
-        ":linked",
+    data = [":dev_build"],
+    importmap = "dev.importmap.json",
+    index = "index.html",
+    loaders = ["systemjs"],
+)
+
+link_web_modules(
+    name = "prod_build",
+    out = "prod.importmap.json",
+    js_env = {
+        "JS_BUNDLE_FORMAT": "systemjs",
+        "NODE_ENV": "production",
+    },
+    deps = [
+        ":main",
+        "//bazel/js/systemjs",
+        "//npm:react/jsx-runtime",
     ],
-    importmap = "linked.importmap.json",
+)
+
+# This is far from a prod server, just showing how prod assets look
+web_module_app_server(
+    name = "serve.prod",
+    data = [":prod_build"],
+    importmap = "prod.importmap.json",
     index = "index.html",
     loaders = ["systemjs"],
 )

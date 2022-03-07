@@ -15,6 +15,12 @@ bazel run //example/app:serve
 ibazel run //example/app:serve
 ```
 
+Alternatively run the prod server target to see minified and optimized assets
+
+```sh
+bazel run //example/app:serve.prod
+```
+
 The best starting point for understanding the example is in the example/app/BUILD.bazel. There are a few first-order deps in example/packages and example/routes.
 
 You can also run the dependent tests for every package.

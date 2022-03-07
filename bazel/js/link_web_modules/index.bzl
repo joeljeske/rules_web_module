@@ -43,7 +43,7 @@ def _impl(ctx):
         )),
     ]
 
-link_importmaps = rule(
+link_web_modules = rule(
     implementation = _impl,
     attrs = {
         "deps": attr.label_list(
@@ -55,7 +55,7 @@ link_importmaps = rule(
             mandatory = True,
         ),
         "_tool": attr.label(
-            default = "//bazel/js/link_importmaps:tool",
+            default = "//bazel/js/link_web_modules:tool",
             executable = True,
             cfg = "exec",
         ),
