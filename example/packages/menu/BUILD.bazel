@@ -8,12 +8,11 @@ web_module_library(
         exclude = SRCS_EXCLUDE_PATTERNS,
     ),
     visibility = [
-        "//app:__subpackages__",
-        "//packages:__subpackages__",
+        "//example:__subpackages__",
     ],
     deps = DEPS + [
         "//npm:react",
-        "//packages/button",
+        "//example/packages/button",
     ],
 )
 

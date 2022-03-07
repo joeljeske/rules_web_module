@@ -1,5 +1,5 @@
 import { FC, lazy, Suspense } from "react";
-import { Menu } from "rh/packages/menu";
+import { Menu } from "rh/example/packages/menu";
 
 const AssetLink = lazy(async () => {
   const assetUrl = await import.meta.resolve(

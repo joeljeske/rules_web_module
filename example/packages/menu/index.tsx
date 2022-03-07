@@ -1,4 +1,4 @@
-import { Button } from "rh/packages/button";
+import { Button } from "rh/example/packages/button";
 import { FC, useState } from "react";
 
 export const Menu: FC = () => {

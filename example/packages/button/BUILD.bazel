@@ -7,7 +7,7 @@ web_module_library(
         SRCS_PATTERNS,
         exclude = SRCS_EXCLUDE_PATTERNS,
     ),
-    visibility = ["//packages:__subpackages__"],
+    visibility = ["//example:__subpackages__"],
     deps = DEPS + ["//npm:react"],
 )
 

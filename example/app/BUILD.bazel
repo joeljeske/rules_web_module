@@ -1,12 +1,14 @@
 load("//bazel/js:index.bzl", "link_importmaps", "web_module_app_server", "web_module_file_loader", "web_module_library", "web_module_test")
 load("//bazel/js:constants.bzl", "DEPS", "SRCS_EXCLUDE_PATTERNS", "SRCS_PATTERNS", "TEST_DEPS", "TEST_SRCS_PATTERNS")
 
+# Loading static assets into the bundle (assets could be pre-processed as needed)
 web_module_file_loader(
     name = "static-assets",
     assets = glob(["assets/*"]),
     module_name = "static",
 )
 
+# The top-level "library" that is capable of running in the browser
 web_module_library(
     name = "main",
     srcs = glob(
@@ -17,10 +19,11 @@ web_module_library(
         ":static-assets",
         "//npm:react",
         "//npm:react-dom",
-        "//packages/menu",
+        "//example/packages/menu",
     ],
 )
 
+# :test runs all the tests for the current package only
 web_module_test(
     name = "test",
     srcs = glob(TEST_SRCS_PATTERNS),
